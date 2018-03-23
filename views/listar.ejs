@@ -1,0 +1,43 @@
+
+
+
+</p>
+<p>
+
+</p>
+
+<table id="tableLista" width="80%">
+<thead>
+    <tr>
+        <th>Nome</th>
+        <th>Data de Nascimento</th>
+        <th>E-mail</th>
+        <th>Endereço</th>
+        <th>CPF/CNPJ</th>
+        <th>Tipo</th>
+        <th></th>
+    </tr>
+</thead>
+<tbody>
+<% if (alunos.length > 0) { %>
+    <% alunos.forEach((aluno) => { %>
+    <tr>
+        <td><%=aluno.nome%></td>
+        <td><%=aluno.bday%></td>
+        <td><%=aluno.email%></td>
+        <td><%=aluno.endereco%></td>
+        <td><%=aluno.cpf_cnpj%></td>
+        <td><%=aluno.person%></td>
+        <td>
+            <a href="javascript: alterar('<%=aluno._id%>')">Alterar</a>
+            <a href="javascript: excluir('<%=aluno._id%>')">Excluir</a>
+        </td>
+    </tr>
+    <% })%>
+<% }else{ %>
+   <tr>
+       <td colspan="7">Não há pessoas cadastradas.</td>
+   </tr>
+<% } %>
+</tbody>
+</table>

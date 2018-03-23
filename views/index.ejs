@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title><%=title%></title>
+  <script type="text/javascript" src="/javascripts/jquery-3.2.0.min.js"></script>
+  <script type="text/javascript">
+  function adicionar(){
+      $("#formulario").show()
+      limparForm()
+  }
+
+  function salvar(){
+      var objeto = {
+          nome: $("#nome").val(),
+          bday: $("#bday").val(),
+          email: $("#email").val(),
+          endereco: $("#endereco").val(),
+          cpf_cnpj: $("#cpf_cnpj").val(),
+          email: $("#email").val(),
+          person: $("#person").val()
+      }
+      $.post( "/salvar", objeto, function(data){
+            if (data.mensagem == "OK"){
+                alert("Aluno salvo com sucesso. _id = " + data.aluno._id)
+                $("#formulario").hide()
+                limparForm()
+                carregarLista()
+            }else{
+                alert("Ops bugou...")
+            }
+
+          });
+      return false
+  }
+  function alterar(id){
+      $.post( "/alterar",
+          {
+              id: id
+          },
+          function(data){
+            var aluno = data.aluno
+              if (aluno){
+                  $("#nome").val(aluno.nome)
+                  $("#bday").val(aluno.bday)
+                  $("#email").val(aluno.email)
+                  $("#endereco").val(aluno.endereco)
+                  $("#cpf_cnpj").val(aluno.cpf_cnpj)
+                  $("#person").val(aluno.person)
+                  $("#id").val(aluno._id)
+                  $("#formulario").show()
+              }else{
+                  alert("Ops bugou...")
+              }
+
+          });
+  }
+  function excluir(id){
+      if (confirm("Vc está certo disso?")){
+          $.post( "/excluir",
+              {
+                  id: id
+              },
+              function(data){
+                  if (data.mensagem == "OK"){
+                      alert("Aluno excluído.")
+                      $("#formulario").hide()
+                      carregarLista()
+                  }else{
+                      alert("Ops... deu bug ao excluir")
+                  }
+
+              });
+      }
+  }
+  function limparForm(){
+      $("#nome").val("")
+      $("#bday").val("")
+      $("#email").val("")
+      $("#endereco").val("")
+      $("#cpf_cnpj").val("")
+      $("#person").val("")
+      $("#id").val("")
+  }
+  function carregarLista(){
+      $.get( "/listar/null_undefined", { },
+          function(data){
+              $("#lista").html(data)
+          });
+  }
+  function search(){
+      var name = $("#search").val();
+      $.get( "/listar/"+name, { },
+          function(data){
+              $("#lista").html(data)
+          });
+  }
+  $(document).ready(function(){
+      $("#formulario").hide()
+      carregarLista()
+  })
+  </script>
+
+
+</head>
+<body>
+<% include ./partials/menu %>
+
+<p>
+<a href="javascript: adicionar()">Adicionar</a>
+</p>
+
+<p><input type="text" placeholder="Digite o nome para pesquisa" id="search">
+  <input type="button" id="search1" value="Pesquisar" onclick="search()">
+  <input type="button" id="search2" value="Atualizar" onclick="carregarLista()">
+<div id="lista">
+
+</div>
+
+<form name="formulario" id="formulario" action="/salvar" method="post" onsubmit="return salvar()">
+
+  <p>Nome <input type="text" name="nome" id="nome" required/><br /></p>
+  <p>Data de Nascimento <input type="date" name="bday" id="bday" required/><br /></p>
+  <p>E-mail <input type="email" name="email" id="email" /><br /></p>
+  <p>Endereço <input type="text" name="endereco" id="endereco" required/><br /></p>
+  <p>CPF/CNPJ <input type="number" name="cpf_cnpj" id="cpf_cnpj" required/><br /></p>
+  <p>Selecione:<select id="person">
+    <option value="Física">Pessoa Física</option>
+    <option value="Jurídica">Pessoa Jurídica</option>
+  </select>
+  </p>
+  <input type="hidden" name="id" id="id" />
+  <input type="submit" name="enviar" value="Salvar" />
+</form>
+
+
+</body>
+</html>
